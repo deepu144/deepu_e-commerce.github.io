@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stripe Payment</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        #card-element {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        #payment-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        #card-errors {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<form id="payment-form">
+    <div id="card-element"><!-- A Stripe Element will be inserted here. --></div>
+    <button type="submit">Submit Payment</button>
+    <div id="card-errors" role="alert"></div>
+</form>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const paymentId = urlParams.get('paymentId');
+        if (!paymentId) {
+            alert("Invalid payment ID");
+            return;
+        }
+        const stripe = Stripe('pk_test_51PWHW5RuyZn79HMLw32J4qPdJZErS95b4BXTfLza88qSrsnqtTh5OmCHgOA11VqMv6oW1PSvVzPHhVpgMVhDv7eL00UufQdmgL');
+        const elements = stripe.elements();
+        const card = elements.create('card');
+        card.mount('#card-element');
+        const form = document.getElementById('payment-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const { token, error } = await stripe.createToken(card);
+            if (error) {
+                document.getElementById('card-errors').textContent = error.message;
+            } else {
+                const response = await fetch('/stripe/charge', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        stripeToken: token.id,
+                        paymentId: paymentId
+                    })
+                });
+                const responseBody = await response.json();
+                if (responseBody.success) {
+                    alert('Payment successful!');
+                } else {
+                    alert('Payment failed: ' + responseBody.message);
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>
