@@ -27,7 +27,7 @@ public class ProductControllerImpl implements ProductController {
 
     @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
     @Override
-    @GetMapping("")
+    @GetMapping("/")
     public ResponseEntity<CommonResponse> getAllProducts(@RequestParam(required = false) String category,
                                                          @RequestParam(required = false) String name ,
                                                          @RequestParam(required = false) Double fromPrice ,

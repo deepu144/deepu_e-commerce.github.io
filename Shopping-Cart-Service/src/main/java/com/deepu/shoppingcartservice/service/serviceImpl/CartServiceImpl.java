@@ -113,7 +113,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CommonResponse getCartByEmail(String email) throws Exception {
+    public CommonResponse getCartByEmail() throws Exception {
+        String email = getEmailFromSecurityContextHolder();
         List<Cart> cartList = cartRepository.findByEmail(email);
         List<CartObject> cartObjects = new ArrayList<>();
         for(Cart cart : cartList){
@@ -125,6 +126,22 @@ public class CartServiceImpl implements CartService {
         commonResponse.setData(listResponse);
         commonResponse.setStatus(ResponseStatus.SUCCESS);
         commonResponse.setSuccessMessage(Constant.FETCH_CART_EMAIL_SUCCESS);
+        return commonResponse;
+    }
+
+    @Override
+    public CommonResponse getTotalPriceFromUserCartProduct() throws Exception {
+        String email = getEmailFromSecurityContextHolder();
+        double price = 0.0;
+        List<Cart> cartList = cartRepository.findByEmail(email);
+        for(Cart cart : cartList){
+            price += ( getProductObject(cart.getProductId()).getPrice() * cart.getQuantity() );
+        }
+        CommonResponse commonResponse = new CommonResponse();
+        commonResponse.setCode(200);
+        commonResponse.setData(price);
+        commonResponse.setStatus(ResponseStatus.SUCCESS);
+        commonResponse.setSuccessMessage(Constant.FETCH_TOTAL_CART_PRICE_SUCCESS);
         return commonResponse;
     }
 
@@ -141,6 +158,11 @@ public class CartServiceImpl implements CartService {
             throw new NoSuchObjectException(Constant.PRODUCT_NOT_AVAILABLE);
         }
         return productObject;
+    }
+
+    public String getEmailFromSecurityContextHolder(){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userDetails.getUsername();
     }
 
 }

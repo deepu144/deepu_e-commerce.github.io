@@ -15,5 +15,7 @@ public interface CartService {
 
     CommonResponse deleteCart(String cartUniqueId) throws NoSuchObjectException;
 
-    CommonResponse getCartByEmail(String email) throws Exception;
+    CommonResponse getCartByEmail() throws Exception;
+
+    CommonResponse getTotalPriceFromUserCartProduct() throws Exception;
 }

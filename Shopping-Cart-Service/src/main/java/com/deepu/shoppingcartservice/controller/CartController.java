@@ -33,7 +33,11 @@ public interface CartController {
     ResponseEntity<CommonResponse> deleteCartByUniqueId(@PathVariable("cart-uniqueId") String cartUniqueId);
 
     @ApiResponse(description = "Get All Cart From User E-mail")
-    @GetMapping("/{email}")
-    ResponseEntity<CommonResponse> getAllCartByEmail(@PathVariable("email") String email);
+    @GetMapping("/")
+    ResponseEntity<CommonResponse> getAllCartByEmail();
+
+    @ApiResponse(description = "Get Total Price of User Cart Products")
+    @GetMapping("/price")
+    ResponseEntity<CommonResponse> getTotalPriceFromUserCart();
 
 }

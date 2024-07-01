@@ -15,4 +15,5 @@ public class Constant {
     public static final String CART_UPDATE_SUCCESS = "Cart has been Updated Successfully!";
     public static final String CART_DELETE_SUCCESS = "Cart has been Deleted Successfully!";
     public static final String FETCH_CART_EMAIL_SUCCESS = "All Cart Has been fetched by User-Email Successfully" ;
+    public static final String FETCH_TOTAL_CART_PRICE_SUCCESS = "The Total Price of All product from the User Cart is Computed Successfully";
 }
