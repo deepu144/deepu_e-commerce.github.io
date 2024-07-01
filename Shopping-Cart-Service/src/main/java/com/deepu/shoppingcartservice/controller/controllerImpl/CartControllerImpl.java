@@ -100,11 +100,23 @@ public class CartControllerImpl implements CartController {
     @Override
     @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
     @GetMapping("/")
-    public ResponseEntity<CommonResponse> getAllCartByEmail(@RequestParam String email){
+    public ResponseEntity<CommonResponse> getAllCartByEmail(){
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(cartService.getCartByEmail(email));
+            return ResponseEntity.status(HttpStatus.OK).body(cartService.getCartByEmail());
         }catch (Exception e){
             log.error("** getAllCartByEmail: {}",e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(setServerError(e));
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
+    @GetMapping("/price")
+    public ResponseEntity<CommonResponse> getTotalPriceFromUserCart(){
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(cartService.getTotalPriceFromUserCartProduct());
+        }catch (Exception e){
+            log.error("** getTotalPriceFromUserCart: {}",e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(setServerError(e));
         }
     }
