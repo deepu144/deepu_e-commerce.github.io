@@ -5,11 +5,12 @@ import com.deepu.notificationservice.enumeration.ResponseStatus;
 import com.deepu.notificationservice.request.EmailDetailRequest;
 import com.deepu.notificationservice.response.CommonResponse;
 import com.deepu.notificationservice.service.EmailService;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,19 +21,16 @@ public class EmailServiceImpl implements EmailService {
     @Value("${spring.mail.username}")
     private String sender;
 
-
     @Override
     public CommonResponse sendSimpleEmail(EmailDetailRequest emailDetailRequest) {
-        if(emailDetailRequest.getRecipient()==null){
-            throw new MailSendException("Email is not Provided");
-        }
         try {
-            SimpleMailMessage mailMessage=new SimpleMailMessage();
-            mailMessage.setFrom(sender);
-            mailMessage.setTo(emailDetailRequest.getRecipient());
-            mailMessage.setText(emailDetailRequest.getMsgBody());
-            mailMessage.setSubject(emailDetailRequest.getSubject());
-            javaMailSender.send(mailMessage);
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+            helper.setFrom(sender);
+            helper.setTo(emailDetailRequest.getRecipient());
+            helper.setSubject(emailDetailRequest.getSubject());
+            helper.setText(emailDetailRequest.getMsgBody(), true);
+            javaMailSender.send(mimeMessage);
             CommonResponse commonResponse = new CommonResponse();
             commonResponse.setCode(200);
             commonResponse.setData(null);
@@ -48,4 +46,5 @@ public class EmailServiceImpl implements EmailService {
             return commonResponse;
         }
     }
+
 }
