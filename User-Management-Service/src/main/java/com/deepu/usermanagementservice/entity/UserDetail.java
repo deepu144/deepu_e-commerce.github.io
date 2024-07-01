@@ -8,6 +8,7 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -20,6 +21,7 @@ public class UserDetail {
     private Date dob;
     private int age;
     private long phoneNumber;
+    private UUID deliveryAddress;
     @OneToMany(mappedBy = "userDetail", fetch = FetchType.EAGER)
     private List<Address> addresses = new ArrayList<>();
 }

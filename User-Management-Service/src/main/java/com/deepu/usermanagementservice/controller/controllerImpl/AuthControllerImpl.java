@@ -89,7 +89,6 @@ public class AuthControllerImpl implements AuthController {
         }
     }
 
-
     public CommonResponse setServerError(Exception e){
         CommonResponse commonResponse = new CommonResponse();
         commonResponse.setCode(500);
@@ -98,6 +97,5 @@ public class AuthControllerImpl implements AuthController {
         commonResponse.setErrorMessage(Constant.SERVER_ERROR_MESSAGE);
         return commonResponse;
     }
-
 
 }
